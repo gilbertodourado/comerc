@@ -1,4 +1,4 @@
-# Use uma imagem base do PHP com FPM
+# Use a imagem base do PHP com FPM
 FROM php:8.2-fpm-alpine
 
 # Instala as dependências do sistema e extensões do PHP
@@ -12,10 +12,9 @@ RUN apk add --no-cache \
     curl \
     git \
     unzip \
-    && docker-php-ext-configure gd --with-jpeg --with-webp --with-xpm \
+    && docker-php-ext-configure gd --with-jpeg=/usr/include --with-webp=/usr/include --with-xpm=/usr/include \
     && docker-php-ext-install gd \
-    && docker-php-ext-install pdo pdo_mysql xml \
-    && apk del libpng-dev libjpeg-turbo-dev libwebp-dev libxpm-dev zlib-dev libxml2-dev
+    && docker-php-ext-install pdo pdo_mysql xml
 
 # Instala o Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -26,10 +25,14 @@ WORKDIR /var/www/html
 # Copia o restante dos arquivos do projeto
 COPY ./api /var/www/html
 
-# Cria os diretórios necessários e ajusta as permissões
-RUN mkdir -p /var/www/html/storage /var/www/html/bootstrap/cache && \
-    composer install --no-scripts --no-autoloader && \
-    chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+# Cria os diretórios necessários
+RUN mkdir -p /var/www/html/storage /var/www/html/bootstrap/cache
+
+# Instala as dependências do Composer
+RUN composer install --no-scripts --no-autoloader
+
+# Adiciona as permissões corretas
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Expondo a porta 9000
 EXPOSE 9000
