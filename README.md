@@ -33,10 +33,19 @@ Certifique-se de ter os seguintes softwares instalados:
     docker-compose exec php composer install
     ```
 5. **Gere a chave de aplicativo:**
-    Execute o seguinte comando para gerar a chave do aplicativo Laravel:
+    O Lumen não possui um comando automático para gerar a chave APP_KEY. Você pode gerar uma chave manualmente utilizando o seguinte comando:
     ```bash
-    docker-compose exec php artisan key:generate
+    docker-compose exec php php -r "echo bin2hex(random_bytes(32)) . PHP_EOL;"
     ```
+    Depois de gerar a chave, adicione-a ao seu arquivo .env:
+    ```bash
+    APP_KEY=base64:SuaChaveAqui
+    ```
+6. **xecute as migrações do banco de dados:**
+    ```bash
+    docker-compose exec php php artisan migrate
+    ```
+
 
 # Acesso à aplicação
 A aplicação estará disponível em http://192.168.1.14 ou http://localhost no seu navegador.
