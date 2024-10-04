@@ -59,6 +59,6 @@ class OrderService
     public function deleteOrder($id)
     {
         $order = Order::findOrFail($id);
-        $order->forceDelete(); // Isso agora usará soft deletes
+        $order->delete(); // Isso agora usará soft deletes
     }
 }

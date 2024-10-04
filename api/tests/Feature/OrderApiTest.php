@@ -1,7 +1,5 @@
 <?php
 
-namespace Tests\Feature;
-
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 use Tests\TestCase;
@@ -10,9 +8,6 @@ class OrderApiTest extends TestCase
 {
     use DatabaseMigrations, DatabaseTransactions;
 
-    /**
-     * Teste para listar todos os pedidos.
-     */
     public function testCanListOrders()
     {
         \App\Models\Order::factory(10)->create();
@@ -27,9 +22,6 @@ class OrderApiTest extends TestCase
         ]);
     }
 
-    /**
-     * Teste para criar um pedido.
-     */
     public function testCanCreateOrder()
     {
         \App\Models\Product::factory()->create(['id' => 1]);
@@ -44,16 +36,10 @@ class OrderApiTest extends TestCase
 
         $response->assertResponseStatus(201);
 
-        // Verifique se o pedido foi criado corretamente
-        $this->seeInDatabase('orders', [
-            'client_id' => 1,
-            // Ajuste aqui se necessário
-        ]);
+        // Verifique se o pedido foi criado
+        $this->seeInDatabase('orders', ['client_id' => 1]);
     }
 
-    /**
-     * Teste para atualizar um pedido.
-     */
     public function testCanUpdateOrder()
     {
         $order = \App\Models\Order::factory()->create();
@@ -65,22 +51,19 @@ class OrderApiTest extends TestCase
         $response = $this->put("/api/orders/{$order->id}", $data);
 
         $response->assertResponseStatus(200);
-        $response->seeJson([
-            'id' => $order->id,
-            'client_id' => $data['client_id'],
-        ]);
+        $response->seeJson(['id' => $order->id, 'client_id' => $data['client_id']]);
     }
 
-    /**
-     * Teste para deletar um pedido.
-     */
-    public function testCanDeleteOrder()
+    public function testCanSoftDeleteOrder()
     {
         $order = \App\Models\Order::factory()->create();
 
         $response = $this->delete("/api/orders/{$order->id}");
 
         $response->assertResponseStatus(204);
-        $this->notSeeInDatabase('orders', ['id' => $order->id]);
+        
+        // Verifica se o pedido existe mas está soft deleted
+        $this->seeInDatabase('orders', ['id' => $order->id]);
+        $this->assertNotNull($order->fresh()->deleted_at);
     }
 }

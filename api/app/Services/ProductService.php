@@ -35,7 +35,7 @@ class ProductService
     {
         $product = Product::findOrFail($id);
         $this->deletePhoto($product->photo); // Exclui a imagem
-        $product->forceDelete();
+        $product->delete();
     }
 
     public function getProduct($id)
@@ -58,5 +58,16 @@ class ProductService
         if ($path && Storage::disk('public')->exists($path)) {
             Storage::disk('public')->delete($path); // Exclui a imagem anterior
         }
+    }
+    public function restoreProduct($id)
+    {
+        $product = Product::withTrashed()->find($id);
+
+        if ($product) {
+            $product->restore();
+            return $product;
+        }
+
+        throw new \Exception("Product not found.");
     }
 }

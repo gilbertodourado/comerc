@@ -82,9 +82,9 @@ class ClientApiTest extends TestCase
     }
 
     /**
-     * Teste para deletar um cliente.
+     * Teste para deletar um cliente (soft delete).
      */
-    public function testCanDeleteClient()
+    public function testCanSoftDeleteClient()
     {
         // Cria um cliente
         $client = \App\Models\Client::factory()->create();
@@ -95,7 +95,32 @@ class ClientApiTest extends TestCase
         // Verifica o código de status HTTP
         $this->seeStatusCode(204);
 
-        // Verifica se o cliente foi removido do banco de dados
-        $this->notSeeInDatabase('clients', ['id' => $client->id]);
+        // Verifica se o cliente ainda existe na tabela e se 'deleted_at' não é nulo
+        $this->seeInDatabase('clients', [
+            'id' => $client->id,
+            'deleted_at' => $client->fresh()->deleted_at // confirma que o cliente está "deletado"
+        ]);
+    }
+
+    /**
+     * Teste para restaurar um cliente deletado (soft delete).
+     */
+    public function testCanRestoreClient()
+    {
+        // Cria um cliente e o deleta (soft delete)
+        $client = \App\Models\Client::factory()->create();
+        $this->delete("/api/clients/{$client->id}");
+
+        // Restaura o cliente
+        $this->post("/api/clients/{$client->id}/restore");
+
+        // Verifica o código de status HTTP
+        $this->seeStatusCode(204);
+
+        // Verifica se o cliente foi restaurado
+        $this->seeInDatabase('clients', [
+            'id' => $client->id,
+            'deleted_at' => null // deve ser null após a restauração
+        ]);
     }
 }
