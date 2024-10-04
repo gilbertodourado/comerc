@@ -12,31 +12,31 @@ $router->get('/routes', function () use ($router) {
 });
 
 // Rotas para Clientes
-$router->group(['prefix' => 'api'], function () use ($router) {
-    $router->get('clients', ['uses' => 'ClientController@index']); // Listar todos os clientes
-    $router->post('clients', ['uses' => 'ClientController@store']); // Criar um novo cliente
-    $router->get('clients/{id}', ['uses' => 'ClientController@show']); // Obter um cliente específico
-    $router->put('clients/{id}', ['uses' => 'ClientController@update']); // Atualizar um cliente
-    $router->delete('clients/{id}', ['uses' => 'ClientController@destroy']); // Deletar um cliente
-    $router->post('clients/{id}/restore', ['uses' => 'ClientController@restore']); // Restaurar um cliente
+$router->group(['prefix' => 'api/clients'], function () use ($router) {
+    $router->get('/', ['uses' => 'ClientController@index']); // Listar todos os clientes
+    $router->post('/', ['uses' => 'ClientController@store']); // Criar um novo cliente
+    $router->get('{id}', ['uses' => 'ClientController@show']); // Obter um cliente específico
+    $router->put('{id}', ['uses' => 'ClientController@update']); // Atualizar um cliente
+    $router->delete('{id}', ['uses' => 'ClientController@destroy']); // Deletar um cliente
+    $router->post('{id}/restore', ['uses' => 'ClientController@restore']); // Restaurar um cliente
 });
 
 // Rotas para Produtos
-$router->group(['prefix' => 'api'], function () use ($router) {
-    $router->get('products', ['uses' => 'ProductController@index']); // Listar todos os produtos
-    $router->post('products', ['uses' => 'ProductController@store']); // Criar um novo produto
-    $router->get('products/{id}', ['uses' => 'ProductController@show']); // Obter um produto específico
-    $router->put('products/{id}', ['uses' => 'ProductController@update']); // Atualizar um produto
-    $router->delete('products/{id}', ['uses' => 'ProductController@destroy']); // Deletar um produto
-    $router->post('products/{id}/restore', ['uses' => 'ProductController@restore']); // Restaurar um produto
+$router->group(['prefix' => 'api/products'], function () use ($router) {
+    $router->get('/', ['uses' => 'ProductController@index']); // Listar todos os produtos
+    $router->post('/', ['uses' => 'ProductController@store']); // Criar um novo produto
+    $router->get('{id}', ['uses' => 'ProductController@show']); // Obter um produto específico
+    $router->put('{id}', ['uses' => 'ProductController@update']); // Atualizar um produto
+    $router->delete('{id}', ['uses' => 'ProductController@destroy']); // Deletar um produto
+    $router->post('{id}/restore', ['uses' => 'ProductController@restore']); // Restaurar um produto
 });
 
 // Rotas para Pedidos
-$router->group(['prefix' => 'api'], function () use ($router) {
-    $router->get('orders', ['uses' => 'OrderController@index']); // Listar todos os pedidos
-    $router->post('orders', ['uses' => 'OrderController@store']); // Criar um novo pedido
-    $router->get('orders/{id}', ['uses' => 'OrderController@show']); // Obter um pedido específico
-    $router->put('orders/{id}', ['uses' => 'OrderController@update']); // Atualizar um pedido
-    $router->delete('orders/{id}', ['uses' => 'OrderController@destroy']); // Deletar um pedido
-    $router->post('orders/{id}/restore', ['uses' => 'OrderController@restore']); // Restaurar um pedido
+$router->group(['prefix' => 'api/orders'], function () use ($router) {
+    $router->get('/', ['uses' => 'OrderController@index']); // Listar todos os pedidos
+    $router->post('/', ['uses' => 'OrderController@store']); // Criar um novo pedido
+    $router->get('{id}', ['uses' => 'OrderController@show']); // Obter um pedido específico
+    $router->put('{id}', ['uses' => 'OrderController@update']); // Atualizar um pedido
+    $router->delete('{id}', ['uses' => 'OrderController@destroy']); // Deletar um pedido
+    $router->post('{id}/restore', ['uses' => 'OrderController@restore']); // Restaurar um pedido
 });

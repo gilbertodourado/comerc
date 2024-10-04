@@ -9,10 +9,10 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class OrderService
 {
-    public function createOrder($clientId, $productIds)
+    public function createOrder($clientId, $productIds, $quantities)
     {
         // Verificar se o cliente existe
-        $client = Client::find($clientId); // Altere 'Client' para o modelo correto, se necessário
+        $client = Client::find($clientId);
         
         if (!$client) {
             throw new ModelNotFoundException("Client not found");
@@ -21,10 +21,12 @@ class OrderService
         // Criar o pedido
         $order = Order::create(['client_id' => $clientId]);
         
-        foreach ($productIds as $productId) {
+        // Adicionar produtos ao pedido com as respectivas quantidades
+        foreach ($productIds as $index => $productId) {
             OrderProduct::create([
                 'order_id' => $order->id,
                 'product_id' => $productId,
+                'quantity' => $quantities[$index], // Adicionando a quantidade
             ]);
         }
 
@@ -37,6 +39,7 @@ class OrderService
         $order->update($data);
 
         if (isset($data['product_ids'])) {
+            // Atualiza os produtos relacionados ao pedido
             $order->products()->sync($data['product_ids']);
         }
 

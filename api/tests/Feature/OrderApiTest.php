@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests\Feature;
+
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 use Tests\TestCase;
@@ -25,6 +27,29 @@ class OrderApiTest extends TestCase
         ]);
     }
 
+    /**
+     * Teste para criar um pedido.
+     */
+    public function testCanCreateOrder()
+    {
+        \App\Models\Product::factory()->create(['id' => 1]);
+        \App\Models\Product::factory()->create(['id' => 2]);
+        \App\Models\Client::factory()->create(['id' => 1]);
+
+        $response = $this->post('/api/orders', [
+            'product_ids' => [1, 2],
+            'client_id' => 1,
+            'quantities' => [2, 3],
+        ]);
+
+        $response->assertResponseStatus(201);
+
+        // Verifique se o pedido foi criado corretamente
+        $this->seeInDatabase('orders', [
+            'client_id' => 1,
+            // Ajuste aqui se necessário
+        ]);
+    }
 
     /**
      * Teste para atualizar um pedido.

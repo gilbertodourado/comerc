@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use App\Services\OrderService;
 
 class OrderController extends Controller
@@ -16,9 +17,22 @@ class OrderController extends Controller
 
     public function store(Request $request)
     {
-        // Criação do pedido usando 'customer_id' e 'product_ids'
-        $order = $this->orderService->createOrder($request->customer_id, $request->product_ids);
-
+        // Validação dos dados de entrada
+        $validator = Validator::make($request->all(), [
+            'client_id' => 'required|exists:clients,id',
+            'product_ids' => 'required|array',
+            'product_ids.*' => 'exists:products,id',
+            'quantities' => 'required|array',
+            'quantities.*' => 'integer|min:1',
+        ]);
+    
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+    
+        // Criação do pedido usando 'client_id', 'product_ids' e 'quantities'
+        $order = $this->orderService->createOrder($request->client_id, $request->product_ids, $request->quantities);
+    
         return response()->json($order, 201);
     }
 
