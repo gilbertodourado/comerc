@@ -16,16 +16,16 @@ date_default_timezone_set(env('APP_TIMEZONE', 'UTC'));
 | Here we will load the environment and create the application instance
 | that serves as the central piece of this framework. We'll use this
 | application as an "IoC" container and router for this framework.
-|
+| 
 */
 
 $app = new Laravel\Lumen\Application(
     dirname(__DIR__)
 );
 
-// $app->withFacades();
-
-// $app->withEloquent();
+// Ativar o uso de Facades e Eloquent
+$app->withFacades();
+$app->withEloquent();
 
 /*
 |--------------------------------------------------------------------------
@@ -59,7 +59,7 @@ $app->singleton(
 |
 */
 
-$app->configure('app');
+$app->configure('database'); // Certifique-se de que o arquivo 'database.php' está correto
 
 /*
 |--------------------------------------------------------------------------
@@ -109,7 +109,7 @@ $app->configure('app');
 $app->router->group([
     'namespace' => 'App\Http\Controllers',
 ], function ($router) {
-    require __DIR__.'/../routes/web.php';
+    require __DIR__.'/../routes/api.php'; // Carregar rotas da API
 });
 
 return $app;
